@@ -1,7 +1,13 @@
 package com.PowerUpFullStack.ms_stock.Category;
 
-import com.PowerUpFullStack.ms_stock.domain.exception.*;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsRequiredException;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsTooLongException;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameAlreadyExistsException;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsRequired;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsTooLongException;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
+import com.PowerUpFullStack.ms_stock.domain.model.SortDirection;
 import com.PowerUpFullStack.ms_stock.domain.spi.ICategoryPersistencePort;
 import com.PowerUpFullStack.ms_stock.domain.usecase.CategoryUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +17,15 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @TestPropertySource(locations = "classpath:application-dev.yml")
 @SpringBootTest
@@ -120,8 +132,75 @@ public class CategoryUseCaseTest {
         assertThrows(CategoryNameAlreadyExistsException.class, () -> categoryUseCase.createCategory(existingCategory));
     }
 
+    // Pagination
 
+    @Test
+    void testGetPaginationCategoriesByAscSuccess() {
+        // Arrange
+        Category cat1 = new Category();
+        cat1.setName("Alpha");
+        Category cat2 = new Category();
+        cat2.setName("Beta");
+        Category cat3 = new Category();
+        cat3.setName("Gamma");
 
+        List<Category> categories = Arrays.asList(cat3, cat1, cat2);
+        CustomPage<Category> customPage = new CustomPage<>();
+        customPage.setContent(categories);
 
+        when(categoryPersistencePort.getPaginationCategories()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Category> result = categoryUseCase.getPaginationCategoriesByAscAndDesc(SortDirection.ASC);
+
+        // Assert
+        List<Category> sortedCategories = result.getContent();
+        assertEquals(3, sortedCategories.size());
+        assertEquals("Alpha", sortedCategories.get(0).getName());
+        assertEquals("Beta", sortedCategories.get(1).getName());
+        assertEquals("Gamma", sortedCategories.get(2).getName());
+    }
+
+    @Test
+    void testGetPaginationCategoriesByDescSuccess() {
+        // Arrange
+        Category cat1 = new Category();
+        cat1.setName("Alpha");
+        Category cat2 = new Category();
+        cat2.setName("Beta");
+        Category cat3 = new Category();
+        cat3.setName("Gamma");
+
+        List<Category> categories = Arrays.asList(cat3, cat1, cat2);
+        CustomPage<Category> customPage = new CustomPage<>();
+        customPage.setContent(categories);
+
+        when(categoryPersistencePort.getPaginationCategories()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Category> result = categoryUseCase.getPaginationCategoriesByAscAndDesc(SortDirection.DESC);
+
+        // Assert
+        List<Category> sortedCategories = result.getContent();
+        assertEquals(3, sortedCategories.size());
+        assertEquals("Gamma", sortedCategories.get(0).getName());
+        assertEquals("Beta", sortedCategories.get(1).getName());
+        assertEquals("Alpha", sortedCategories.get(2).getName());
+    }
+
+    @Test
+    void testGetPaginationCategoriesWithInvalidSortDirection() {
+        // Arrange
+        CustomPage<Category> customPage = new CustomPage<>();
+        customPage.setContent(Arrays.asList(new Category()));
+
+        when(categoryPersistencePort.getPaginationCategories()).thenReturn(customPage);
+
+        // Act & Assert
+        // Test with valid SortDirection values
+        assertDoesNotThrow(() -> categoryUseCase.getPaginationCategoriesByAscAndDesc(SortDirection.ASC));
+        assertDoesNotThrow(() -> categoryUseCase.getPaginationCategoriesByAscAndDesc(SortDirection.DESC));
+
+    }
 
 }

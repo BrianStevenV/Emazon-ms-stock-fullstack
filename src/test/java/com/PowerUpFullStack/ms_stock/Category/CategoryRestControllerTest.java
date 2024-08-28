@@ -1,8 +1,14 @@
 package com.PowerUpFullStack.ms_stock.Category;
 
-import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryRequestMapper;
-import com.PowerUpFullStack.ms_stock.domain.api.ICategoryServicePort;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.controller.CategoryRestController;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.SortDirectionRequestDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.CategoryPaginationResponseDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.CategoryResponseDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryRequestMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryResponseMapper;
+import com.PowerUpFullStack.ms_stock.domain.api.ICategoryServicePort;
+import com.PowerUpFullStack.ms_stock.domain.model.Category;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -16,8 +22,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @Validated
 @TestPropertySource(locations = "classpath:application-dev.yml")
@@ -32,6 +45,8 @@ public class CategoryRestControllerTest {
     private ICategoryServicePort categoryServicePort;
     @MockBean
     private ICategoryRequestMapper categoryRequestMapper;
+    @MockBean
+    private ICategoryResponseMapper categoryResponseMapper;
 
     @BeforeEach
     public void setUp() {
@@ -62,5 +77,103 @@ public class CategoryRestControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    void getPaginationCategories_ValidSortDirectionAsc_ShouldReturnOk() throws Exception {
+        // Arrange
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto(1L, "Electronics", "Devices");
+        CategoryPaginationResponseDto<CategoryResponseDto> paginationResponseDto = new CategoryPaginationResponseDto<>(
+                List.of(categoryResponseDto),
+                0,
+                10,
+                1,
+                1,
+                true,
+                true
+        );
+
+        CustomPage<Category> customPage = new CustomPage<>();
+
+        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(categoryRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
+                .thenReturn(customPage);
+
+        when(categoryResponseMapper.toCategoryPaginationResponseDto(customPage))
+                .thenReturn(paginationResponseDto);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/category/pagination/")
+                        .param("sortDirection", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Electronics")))
+                .andExpect(jsonPath("$.content[0].description", is("Devices")));
+    }
+
+
+
+    @Test
+    void getPaginationCategories_ValidSortDirectionDesc_ShouldReturnOk() throws Exception {
+        // Arrange
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto(1L, "Electronics", "Devices");
+        CategoryPaginationResponseDto<CategoryResponseDto> paginationResponseDto = new CategoryPaginationResponseDto<>(
+                List.of(categoryResponseDto),
+                0,
+                10,
+                1,
+                1,
+                true,
+                true
+        );
+
+        CustomPage<Category> customPage = new CustomPage<>();
+
+        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(categoryRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
+                .thenReturn(customPage);
+
+        when(categoryResponseMapper.toCategoryPaginationResponseDto(customPage))
+                .thenReturn(paginationResponseDto);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/category/pagination/")
+                        .param("sortDirection", "DESC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Electronics")))
+                .andExpect(jsonPath("$.content[0].description", is("Devices")));
+    }
+
+
+
+    @Test
+    void getPaginationCategories_NoSortDirection_ShouldUseDefaultValue() throws Exception {
+        // Arrange
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto(1L, "Electronics", "Devices");
+        CategoryPaginationResponseDto<CategoryResponseDto> paginationResponseDto = new CategoryPaginationResponseDto<>(
+                List.of(categoryResponseDto),
+                0,
+                10,
+                1,
+                1,
+                true,
+                true
+        );
+
+        CustomPage<Category> customPage = new CustomPage<>();
+
+        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(categoryRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
+                .thenReturn(customPage);
+
+        when(categoryResponseMapper.toCategoryPaginationResponseDto(customPage))
+                .thenReturn(paginationResponseDto);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/category/pagination/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Electronics")))
+                .andExpect(jsonPath("$.content[0].description", is("Devices")));
+    }
 
 }

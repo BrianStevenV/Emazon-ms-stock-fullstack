@@ -1,9 +1,18 @@
 package com.PowerUpFullStack.ms_stock.domain.usecase;
 
 import com.PowerUpFullStack.ms_stock.domain.api.ICategoryServicePort;
-import com.PowerUpFullStack.ms_stock.domain.exception.*;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsRequiredException;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsTooLongException;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameAlreadyExistsException;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsRequired;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsTooLongException;
+import com.PowerUpFullStack.ms_stock.domain.exception.InvalidSortDirectionException;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
+import com.PowerUpFullStack.ms_stock.domain.model.SortDirection;
 import com.PowerUpFullStack.ms_stock.domain.spi.ICategoryPersistencePort;
+
+import java.util.Comparator;
 
 
 public class CategoryUseCase implements ICategoryServicePort {
@@ -19,6 +28,28 @@ public class CategoryUseCase implements ICategoryServicePort {
             categoryPersistencePort.saveCategory(category);
         }
     }
+
+    @Override
+    public CustomPage<Category> getPaginationCategoriesByAscAndDesc(SortDirection sortDirection) {
+        CustomPage<Category> customPageCategory = categoryPersistencePort.getPaginationCategories();
+
+        if ("ASC".equalsIgnoreCase(sortDirection.name()) || "DESC".equalsIgnoreCase(sortDirection.name())) {
+            customPageCategory.setContent(
+                    customPageCategory.getContent().stream()
+                            .sorted("ASC".equalsIgnoreCase(sortDirection.name()) ?
+                                    Comparator.comparing(Category::getName) :
+                                    Comparator.comparing(Category::getName).reversed())
+                            .toList()
+            );
+        }   else {
+            throw new InvalidSortDirectionException();
+        }
+
+        return customPageCategory;
+    }
+
+
+
 
     private Boolean categoryNameValidation(String categoryName) {
         if(categoryName == null || categoryName.isEmpty()) {
