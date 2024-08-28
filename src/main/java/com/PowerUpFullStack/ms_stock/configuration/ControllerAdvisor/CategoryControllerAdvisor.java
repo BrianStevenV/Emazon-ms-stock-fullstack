@@ -1,4 +1,4 @@
-package com.PowerUpFullStack.ms_stock.configuration;
+package com.PowerUpFullStack.ms_stock.configuration.ControllerAdvisor;
 
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.CategoriesResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsRequiredException;
@@ -33,7 +33,7 @@ import static com.PowerUpFullStack.ms_stock.configuration.Constants.RESPONSE_ERR
 
 
 @ControllerAdvice
-public class ControllerAdvisor {
+public class CategoryControllerAdvisor {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
         List<String> errorMessages = new ArrayList<>();

@@ -1,32 +1,35 @@
 package com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "category")
+@Table(name = "brand")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CategoryEntity {
+public class BrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "name", unique = true)
     @Size(max = 50, message = "Name must be less than 50 characters")
-    @Column(name = "name")
+    @NotNull(message = "Name is required")
     private String name;
 
-    @Size(max = 90, message = "Description must be less than 90 characters")
     @Column(name = "description")
+    @Size(max = 120, message = "Description must be less than 120 characters")
+    @NotNull(message = "Description is required")
     private String description;
 }

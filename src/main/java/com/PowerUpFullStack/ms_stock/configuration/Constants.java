@@ -2,6 +2,11 @@ package com.PowerUpFullStack.ms_stock.configuration;
 
 public class Constants {
     private Constants() { throw new IllegalStateException("Utility class"); }
+    public static final String BRAND_NAME_ALREADY_EXISTS_MESSAGE_EXCEPTION = "Brand name already exists";
+    public static final String BRAND_DESCRIPTION_IS_REQUIRED_MESSAGE_EXCEPTION = "Description is mandatory";
+    public static final String BRAND_DESCRIPTION_IS_TOO_LONG_MESSAGE_EXCEPTION = "Description must be less than 120 characters";
+    public static final String BRAND_NAME_IS_REQUIRED_MESSAGE_EXCEPTION = "Name is mandatory";
+    public static final String BRAND_NAME_IS_TOO_LONG_MESSAGE_EXCEPTION = "Name must be less than 50 characters";
     public static final String CATEGGORIES_NOT_FOUND_MESSAGE_EXCEPTION = "No categories found in the database";
     public static final String INVALID_SORT_DIRECTION_MESSAGE_EXCEPTION = "Invalid sort direction";
     public static final String CATEGORY_NAME_IS_TOO_LONG_MESSAGE_EXCEPTION = "Name must be less than 50 characters";
