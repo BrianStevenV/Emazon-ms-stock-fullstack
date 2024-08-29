@@ -60,4 +60,11 @@ public class CategoryMySqlAdapter implements ICategoryPersistencePort {
         return customPage;
     }
 
+    @Override
+    public Category findById(Long categoryId) {
+        return categoryEntityMapper.toCategory(categoryRepository
+                .findById(categoryId)
+                .orElseThrow(ResourcesNotFoundException::new));
+    }
+
 }

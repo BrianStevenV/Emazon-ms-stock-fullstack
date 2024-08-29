@@ -58,4 +58,11 @@ public class BrandMySqlAdapter implements IBrandPersistencePort {
 
         return customPage;
     }
+
+    @Override
+    public Brand findById(Long brandId) {
+        return brandEntityMapper.toBrand(brandRepository
+                .findById(brandId)
+                .orElseThrow(ResourcesNotFoundException::new));
+    }
 }

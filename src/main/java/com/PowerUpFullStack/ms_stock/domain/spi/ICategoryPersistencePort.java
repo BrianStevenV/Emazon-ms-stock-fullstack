@@ -8,4 +8,5 @@ public interface ICategoryPersistencePort {
     void saveCategory(Category category);
     Category findByName(String nameCategory);
     CustomPage<Category> getPaginationCategories();
+    Category findById(Long categoryId);
 }

@@ -7,4 +7,5 @@ public interface IBrandPersistencePort {
     void saveBrand(Brand brand);
     Brand findByName(String nameBrand);
     CustomPage<Brand> getPaginationBrand();
+    Brand findById(Long brandId);
 }

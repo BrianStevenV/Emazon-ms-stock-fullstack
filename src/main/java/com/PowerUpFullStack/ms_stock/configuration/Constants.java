@@ -2,6 +2,9 @@ package com.PowerUpFullStack.ms_stock.configuration;
 
 public class Constants {
     private Constants() { throw new IllegalStateException("Utility class"); }
+    public static final String PRODUCT_CANT_MORE_THREE_CATEGORIES_MESSAGE_EXCEPTION= "Product can't have more than three categories";
+    public static final String PRODUCT_MUST_HAVE_ALMOST_ONCE_CATEGORY_MESSAGE_EXCEPTION = "Product must have at least one category";
+    public static final String PRODUCT_CATEGORY_REPEATED_MESSAGE_EXCEPTION = "The selected categories are repeated";
     public static final String BRAND_NAME_ALREADY_EXISTS_MESSAGE_EXCEPTION = "Brand name already exists";
     public static final String BRAND_DESCRIPTION_IS_REQUIRED_MESSAGE_EXCEPTION = "Description is mandatory";
     public static final String BRAND_DESCRIPTION_IS_TOO_LONG_MESSAGE_EXCEPTION = "Description must be less than 120 characters";

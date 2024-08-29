@@ -20,15 +20,14 @@ import lombok.NoArgsConstructor;
 public class BrandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, nullable = false)
     @Size(max = 50, message = "Name must be less than 50 characters")
     @NotNull(message = "Name is required")
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     @Size(max = 120, message = "Description must be less than 120 characters")
     @NotNull(message = "Description is required")
     private String description;
