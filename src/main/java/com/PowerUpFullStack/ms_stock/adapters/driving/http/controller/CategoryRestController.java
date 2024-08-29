@@ -6,6 +6,7 @@ import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.Category
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.CategoryResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryRequestMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryResponseMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ISortRequestMapper;
 import com.PowerUpFullStack.ms_stock.domain.api.ICategoryServicePort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,6 +31,7 @@ public class CategoryRestController {
     private final ICategoryServicePort categoryServicePort;
     private final ICategoryRequestMapper categoryRequestMapper;
     private final ICategoryResponseMapper categoryResponseMapper;
+    private final ISortRequestMapper sortRequestMapper;
 
     @Operation(summary = "Add a new Category",
             responses = {
@@ -53,7 +55,7 @@ public class CategoryRestController {
     public CategoryPaginationResponseDto<CategoryResponseDto> getPaginationCategoriesByAscAndDesc(@Valid @RequestParam(defaultValue = "ASC") SortDirectionRequestDto sortDirectionRequestDto){
         return categoryResponseMapper
                 .toCategoryPaginationResponseDto(categoryServicePort
-                        .getPaginationCategoriesByAscAndDesc(categoryRequestMapper
+                        .getPaginationCategoriesByAscAndDesc(sortRequestMapper
                                 .toSortDirection(sortDirectionRequestDto)));
     }
 }

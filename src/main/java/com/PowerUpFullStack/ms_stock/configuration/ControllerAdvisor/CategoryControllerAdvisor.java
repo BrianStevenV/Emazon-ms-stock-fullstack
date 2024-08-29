@@ -1,6 +1,6 @@
 package com.PowerUpFullStack.ms_stock.configuration.ControllerAdvisor;
 
-import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.CategoriesResourcesNotFoundException;
+import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.ResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsRequiredException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsTooLongException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameAlreadyExistsException;
@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.PowerUpFullStack.ms_stock.configuration.Constants.CATEGGORIES_NOT_FOUND_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.CATEGORY_DESCRIPTION_IS_REQUIRED_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.CATEGORY_DESCRIPTION_IS_TOO_LONG_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.CATEGORY_NAME_ALREADY_EXISTS_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.CATEGORY_NAME_IS_REQUIRED_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.CATEGORY_NAME_IS_TOO_LONG_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.INVALID_SORT_DIRECTION_MESSAGE_EXCEPTION;
+import static com.PowerUpFullStack.ms_stock.configuration.Constants.RESOURCES_NOT_FOUND_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.RESPONSE_ERROR_MESSAGE;
 
 
@@ -94,9 +94,9 @@ public class CategoryControllerAdvisor {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, INVALID_SORT_DIRECTION_MESSAGE_EXCEPTION));
     }
-    @ExceptionHandler(CategoriesResourcesNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCategoriesResourcesNotFoundException(CategoriesResourcesNotFoundException ex){
+    @ExceptionHandler(ResourcesNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoriesResourcesNotFoundException(ResourcesNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, CATEGGORIES_NOT_FOUND_MESSAGE_EXCEPTION));
+                .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, RESOURCES_NOT_FOUND_MESSAGE_EXCEPTION));
     }
 }

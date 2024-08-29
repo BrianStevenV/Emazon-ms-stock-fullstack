@@ -2,7 +2,7 @@ package com.PowerUpFullStack.ms_stock.Category;
 
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.CategoryMySqlAdapter;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.CategoryEntity;
-import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.CategoriesResourcesNotFoundException;
+import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.ResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.mappers.ICategoryEntityMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.repositories.ICategoryRepository;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
@@ -148,7 +148,7 @@ public class CategoryMySqlAdapterTest {
         when(categoryRepository.findAll(pageable)).thenReturn(page);
 
         // Act & Assert
-        assertThrows(CategoriesResourcesNotFoundException.class, () -> {
+        assertThrows(ResourcesNotFoundException.class, () -> {
             categoryMySqlAdapter.getPaginationCategories();
         });
     }

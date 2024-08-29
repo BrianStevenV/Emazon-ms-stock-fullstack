@@ -1,9 +1,17 @@
 package com.PowerUpFullStack.ms_stock.Brand;
 
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.controller.BrandRestController;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.SortDirectionRequestDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandPaginationResponseDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandRequestMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandResponseMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ISortRequestMapper;
 import com.PowerUpFullStack.ms_stock.domain.api.IBrandServicePort;
+import com.PowerUpFullStack.ms_stock.domain.model.Brand;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +24,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Validated
@@ -31,6 +45,10 @@ public class BrandRestControllerTest {
     private IBrandServicePort brandServicePort;
     @MockBean
     private IBrandRequestMapper brandRequestMapper;
+    @MockBean
+    private IBrandResponseMapper brandResponseMapper;
+    @MockBean
+    private ISortRequestMapper sortRequestMapper;
 
     @BeforeEach
     public void setUp() {
@@ -39,6 +57,7 @@ public class BrandRestControllerTest {
     }
 
     @Test
+    @DisplayName("Create Brand return Bad request")
     void createBrand_InvalidRequest_ShouldReturnBadRequest() throws Exception {
         // Arrange
         String brandRequestJson = "{\"name\":\"123@\",\"description\":\"46%5\"}";
@@ -51,6 +70,7 @@ public class BrandRestControllerTest {
     }
 
     @Test
+    @DisplayName("Create Brand return Created")
     void createBrand_ValidRequest_ShouldReturnCreated() throws Exception {
         // Arrange
         String brandRequestJson = "{\"name\":\"Electronics\",\"description\":\"Devices\"}";
@@ -61,5 +81,105 @@ public class BrandRestControllerTest {
                         .content(brandRequestJson))
                 .andExpect(status().isCreated());
     }
+
+
+    @Test
+    @DisplayName("Validator Sort Direction Asc")
+    void getPaginationBrands_ValidSortDirectionAsc_ShouldReturnOk() throws Exception {
+        // Arrange
+        BrandResponseDto brandResponseDto = new BrandResponseDto(1L, "Nike", "Sportswear");
+        BrandPaginationResponseDto<BrandResponseDto> paginationResponseDto = new BrandPaginationResponseDto<>(
+                List.of(brandResponseDto),
+                0,
+                10,
+                1,
+                1,
+                true,
+                true
+        );
+
+        CustomPage<Brand> customPage = new CustomPage<>();
+
+        when(brandServicePort.getPaginationBrandByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
+                .thenReturn(customPage);
+
+        when(brandResponseMapper.toBrandPaginationResponseDto(customPage))
+                .thenReturn(paginationResponseDto);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/brand/pagination/")
+                        .param("sortDirection", "ASC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Nike")))
+                .andExpect(jsonPath("$.content[0].description", is("Sportswear")));
+    }
+
+    @Test
+    @DisplayName("Validator Sort Direction Desc")
+    void getPaginationBrands_ValidSortDirectionDesc_ShouldReturnOk() throws Exception {
+        // Arrange
+        BrandResponseDto brandResponseDto = new BrandResponseDto(1L, "Nike", "Sportswear");
+        BrandPaginationResponseDto<BrandResponseDto> paginationResponseDto = new BrandPaginationResponseDto<>(
+                List.of(brandResponseDto),
+                0,
+                10,
+                1,
+                1,
+                true,
+                true
+        );
+
+        CustomPage<Brand> customPage = new CustomPage<>();
+
+        when(brandServicePort.getPaginationBrandByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
+                .thenReturn(customPage);
+
+        when(brandResponseMapper.toBrandPaginationResponseDto(customPage))
+                .thenReturn(paginationResponseDto);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/brand/pagination/")
+                        .param("sortDirection", "DESC")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Nike")))
+                .andExpect(jsonPath("$.content[0].description", is("Sportswear")));
+    }
+
+    @Test
+    @DisplayName("Validator Sort Direction Default")
+    void getPaginationBrands_NoSortDirection_ShouldUseDefaultValue() throws Exception {
+        // Arrange
+        BrandResponseDto brandResponseDto = new BrandResponseDto(1L, "Nike", "Sportswear");
+        BrandPaginationResponseDto<BrandResponseDto> paginationResponseDto = new BrandPaginationResponseDto<>(
+                List.of(brandResponseDto),
+                0,
+                10,
+                1,
+                1,
+                true,
+                true
+        );
+
+        CustomPage<Brand> customPage = new CustomPage<>();
+
+        when(brandServicePort.getPaginationBrandByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
+                .thenReturn(customPage);
+
+        when(brandResponseMapper.toBrandPaginationResponseDto(customPage))
+                .thenReturn(paginationResponseDto);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/brand/pagination/")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(1)))
+                .andExpect(jsonPath("$.content[0].name", is("Nike")))
+                .andExpect(jsonPath("$.content[0].description", is("Sportswear")));
+    }
+
 
 }

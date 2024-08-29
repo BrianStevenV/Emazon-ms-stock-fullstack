@@ -6,8 +6,13 @@ import com.PowerUpFullStack.ms_stock.domain.exception.BrandDescriptionIsTooLongE
 import com.PowerUpFullStack.ms_stock.domain.exception.BrandNameAlreadyExistsException;
 import com.PowerUpFullStack.ms_stock.domain.exception.BrandNameIsRequiredException;
 import com.PowerUpFullStack.ms_stock.domain.exception.BrandNameIsTooLongException;
+import com.PowerUpFullStack.ms_stock.domain.exception.InvalidSortDirectionException;
 import com.PowerUpFullStack.ms_stock.domain.model.Brand;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
+import com.PowerUpFullStack.ms_stock.domain.model.SortDirection;
 import com.PowerUpFullStack.ms_stock.domain.spi.IBrandPersistencePort;
+
+import java.util.Comparator;
 
 public class BrandUseCase implements IBrandServicePort {
     private final IBrandPersistencePort brandPersistencePort;
@@ -24,6 +29,22 @@ public class BrandUseCase implements IBrandServicePort {
 
     }
 
+    @Override
+    public CustomPage<Brand> getPaginationBrandByAscAndDesc(SortDirection sortDirection) {
+        CustomPage<Brand> customPageBrand = brandPersistencePort.getPaginationBrand();
+        if ("ASC".equalsIgnoreCase(sortDirection.name()) || "DESC".equalsIgnoreCase(sortDirection.name())) {
+            customPageBrand.setContent(
+                    customPageBrand.getContent().stream()
+                            .sorted("ASC".equalsIgnoreCase(sortDirection.name()) ?
+                                    Comparator.comparing(Brand::getName) :
+                                    Comparator.comparing(Brand::getName).reversed())
+                            .toList()
+            );
+        }   else {
+            throw new InvalidSortDirectionException();
+        }
+        return customPageBrand;
+    }
 
 
     private Boolean brandDescriptionValidation(String brandDescription) {

@@ -1,7 +1,7 @@
 package com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters;
 
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.CategoryEntity;
-import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.CategoriesResourcesNotFoundException;
+import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.ResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.mappers.ICategoryEntityMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.repositories.ICategoryRepository;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
@@ -39,7 +39,7 @@ public class CategoryMySqlAdapter implements ICategoryPersistencePort {
         Page<CategoryEntity> categoriesPage = categoryRepository.findAll(pageable);
 
         if(categoriesPage.isEmpty()) {
-            throw new CategoriesResourcesNotFoundException();
+            throw new ResourcesNotFoundException();
         }
 
         List<Category> categoryContent = categoriesPage.getContent()

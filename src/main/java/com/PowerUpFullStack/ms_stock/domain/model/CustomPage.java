@@ -1,8 +1,8 @@
 package com.PowerUpFullStack.ms_stock.domain.model;
 import java.util.List;
 
-public class CustomPage<Category> {
-    private List<Category> content;         // Contenido de la página
+public class CustomPage<T> {
+    private List<T> content;         // Contenido de la página
     private int pageNumber;          // Número de la página actual
     private int pageSize;            // Tamaño de la página
     private long totalElements;      // Número total de elementos
@@ -10,7 +10,7 @@ public class CustomPage<Category> {
     private boolean isFirst;         // Es la primera página?
     private boolean isLast;
 
-    public CustomPage(List<Category> content, int pageNumber, int pageSize, long totalElements, int totalPages, boolean isFirst, boolean isLast) {
+    public CustomPage(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPages, boolean isFirst, boolean isLast) {
         this.content = content;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
@@ -21,11 +21,11 @@ public class CustomPage<Category> {
     }
     public CustomPage() {}
 
-    public List<Category> getContent() {
+    public List<T> getContent() {
         return content;
     }
 
-    public void setContent(List<Category> content) {
+    public void setContent(List<T> content) {
         this.content = content;
     }
 
