@@ -6,7 +6,10 @@ import com.PowerUpFullStack.ms_stock.domain.exception.ProductCategoryRepeatedExc
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductMustHaveAtLeastOneCategoryException;
 import com.PowerUpFullStack.ms_stock.domain.model.Brand;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
+import com.PowerUpFullStack.ms_stock.domain.model.FilterBy;
 import com.PowerUpFullStack.ms_stock.domain.model.Product;
+import com.PowerUpFullStack.ms_stock.domain.model.SortDirection;
 import com.PowerUpFullStack.ms_stock.domain.spi.IBrandPersistencePort;
 import com.PowerUpFullStack.ms_stock.domain.spi.ICategoryPersistencePort;
 import com.PowerUpFullStack.ms_stock.domain.spi.IProductPersistencePort;
@@ -19,10 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -126,4 +132,225 @@ public class ProductUseCaseTest {
         // Act & Assert
         assertThrows(ProductMustHaveAtLeastOneCategoryException.class, () -> productUseCase.createProduct(product));
     }
+
+    //Test write here
+
+    @Test
+    void getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories_SortByProductNameAsc_ShouldReturnSortedProducts() {
+        // Arrange
+        Product product1 = new Product(1L, "Apple", "Description1", 10, 100.0, 1L, List.of(1L));
+        Product product2 = new Product(2L, "Banana", "Description2", 20, 200.0, 2L, List.of(2L));
+
+        CustomPage<Product> customPage = new CustomPage<>(List.of(product2, product1), 0, 10, 2, 1, true, true);
+        when(productPersistencePort.getPaginationProduct()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Product> result = productUseCase.getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection.ASC, FilterBy.PRODUCT);
+
+        // Assert
+        assertEquals("Apple", result.getContent().get(0).getName());
+        assertEquals("Banana", result.getContent().get(1).getName());
+    }
+
+    @Test
+    void getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories_SortByProductNameDesc_ShouldReturnSortedProducts() {
+        // Arrange
+        Product product1 = new Product(1L, "Apple", "Description1", 10, 100.0, 1L, List.of(1L));
+        Product product2 = new Product(2L, "Banana", "Description2", 20, 200.0, 2L, List.of(2L));
+
+        CustomPage<Product> customPage = new CustomPage<>(List.of(product1, product2), 0, 10, 2, 1, true, true);
+        when(productPersistencePort.getPaginationProduct()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Product> result = productUseCase.getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection.DESC, FilterBy.PRODUCT);
+
+        // Assert
+        assertEquals("Banana", result.getContent().get(0).getName());
+        assertEquals("Apple", result.getContent().get(1).getName());
+    }
+
+    @Test
+    void getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories_SortByBrandNameAsc_ShouldReturnSortedProducts() {
+        // Arrange
+        Brand brand1 = new Brand(1L, "ZBrand", "Description1");
+        Brand brand2 = new Brand(2L, "ABrand", "Description2");
+
+        Product product1 = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        Product product2 = new Product(2L, "Product2", "Description2", 20, 200.0, 2L, List.of(2L));
+
+        product1.setBrand(brand1);
+        product2.setBrand(brand2);
+
+        CustomPage<Product> customPage = new CustomPage<>(List.of(product1, product2), 0, 10, 2, 1, true, true);
+        when(productPersistencePort.getPaginationProduct()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Product> result = productUseCase.getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection.ASC, FilterBy.BRAND);
+
+        // Assert
+        assertEquals("ABrand", result.getContent().get(0).getBrand().getName());
+        assertEquals("ZBrand", result.getContent().get(1).getBrand().getName());
+    }
+
+    @Test
+    void getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories_SortByCategoryAsc_ShouldReturnSortedProducts() {
+        // Arrange
+        Category category1 = new Category(1L, "CategoryB", "Description1");
+        Category category2 = new Category(2L, "CategoryA", "Description2");
+
+        Product product1 = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        Product product2 = new Product(2L, "Product2", "Description2", 20, 200.0, 2L, List.of(2L));
+
+        product1.setCategories(Set.of(category1));
+        product2.setCategories(Set.of(category2));
+
+        CustomPage<Product> customPage = new CustomPage<>(List.of(product1, product2), 0, 10, 2, 1, true, true);
+        when(productPersistencePort.getPaginationProduct()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Product> result = productUseCase.getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection.ASC, FilterBy.CATEGORY);
+
+        // Assert
+        assertEquals("CategoryA", result.getContent().get(1).getCategories().iterator().next().getName());
+    }
+
+    @Test
+    void createProduct_WithoutBrand_ShouldThrowException() {
+        // Arrange
+        Product product = new Product();
+        product.setBrandId(null);
+
+        // Act & Assert
+        assertThrows(ProductMustHaveAtLeastOneCategoryException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void createProduct_WithNegativePrice_ShouldThrowException() {
+        // Arrange
+        Product product = new Product();
+        product.setPrice(-100.0);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void createProduct_WithNegativeStock_ShouldThrowException() {
+        // Arrange
+        Product product = new Product();
+        product.setPrice(-10.0);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void createProduct_WithEmptyName_ShouldThrowException() {
+        // Arrange
+        Product product = new Product();
+        product.setName("");
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void createProduct_WithEmptyDescription_ShouldThrowException() {
+        // Arrange
+        Product product = new Product();
+        product.setDescription("");
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> productUseCase.createProduct(product));
+    }
+
+
+
+    @Test
+    void createProduct_WithSomeValidAndSomeDuplicateCategories_ShouldThrowException() {
+        // Arrange
+        Product product = new Product();
+        product.setCategoryId(List.of(1L, 1L, 2L));
+
+        when(categoryPersistencePort.findById(1L)).thenReturn(new Category(1L, "Category1", "Description1"));
+        when(categoryPersistencePort.findById(2L)).thenReturn(new Category(2L, "Category2", "Description2"));
+
+        // Act & Assert
+        assertThrows(ProductCategoryRepeatedException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void getPaginationProductsByAscAndDescByNameBrand_SortByBrandNameDesc_ShouldReturnSortedProducts() {
+        // Arrange
+        Brand brand1 = new Brand(1L, "ZBrand", "Description1");
+        Brand brand2 = new Brand(2L, "ABrand", "Description2");
+
+        Product product1 = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        Product product2 = new Product(2L, "Product2", "Description2", 20, 200.0, 2L, List.of(2L));
+
+        product1.setBrand(brand1);
+        product2.setBrand(brand2);
+
+        CustomPage<Product> customPage = new CustomPage<>(List.of(product1, product2), 0, 10, 2, 1, true, true);
+        when(productPersistencePort.getPaginationProduct()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Product> result = productUseCase.getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection.DESC, FilterBy.BRAND);
+
+        // Assert
+        assertEquals("ZBrand", result.getContent().get(0).getBrand().getName());
+    }
+
+    @Test
+    void getPaginationProductsByAscAndDescByNameCategory_SortByCategoryDesc_ShouldReturnSortedProducts() {
+        // Arrange
+        Category category1 = new Category(1L, "CategoryB", "Description1");
+        Category category2 = new Category(2L, "CategoryA", "Description2");
+
+        Product product1 = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        Product product2 = new Product(2L, "Product2", "Description2", 20, 200.0, 2L, List.of(2L));
+
+        product1.setCategories(Set.of(category1));
+        product2.setCategories(Set.of(category2));
+
+        CustomPage<Product> customPage = new CustomPage<>(List.of(product2, product1), 0, 10, 2, 1, true, true);
+        when(productPersistencePort.getPaginationProduct()).thenReturn(customPage);
+
+        // Act
+        CustomPage<Product> result = productUseCase.getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection.DESC, FilterBy.CATEGORY);
+
+        // Assert
+        assertEquals("CategoryA", result.getContent().get(0).getCategories().iterator().next().getName());
+    }
+
+    @Test
+    void handlePersistencePortFailure_ShouldThrowException() {
+        // Arrange
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        doThrow(RuntimeException.class).when(productPersistencePort).saveProduct(any(Product.class));
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void handleCategoryPersistencePortFailure_ShouldThrowException() {
+        // Arrange
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        when(categoryPersistencePort.findById(1L)).thenThrow(RuntimeException.class);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void handleBrandPersistencePortFailure_ShouldThrowException() {
+        // Arrange
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        when(brandPersistencePort.findById(1L)).thenThrow(RuntimeException.class);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> productUseCase.createProduct(product));
+    }
+
 }

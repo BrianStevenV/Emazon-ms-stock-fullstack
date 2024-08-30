@@ -6,7 +6,10 @@ import com.PowerUpFullStack.ms_stock.domain.exception.ProductCategoryRepeatedExc
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductMustHaveAtLeastOneCategoryException;
 import com.PowerUpFullStack.ms_stock.domain.model.Brand;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
+import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
+import com.PowerUpFullStack.ms_stock.domain.model.FilterBy;
 import com.PowerUpFullStack.ms_stock.domain.model.Product;
+import com.PowerUpFullStack.ms_stock.domain.model.SortDirection;
 import com.PowerUpFullStack.ms_stock.domain.spi.IBrandPersistencePort;
 import com.PowerUpFullStack.ms_stock.domain.spi.ICategoryPersistencePort;
 import com.PowerUpFullStack.ms_stock.domain.spi.IProductPersistencePort;
@@ -35,6 +38,52 @@ public class ProductUseCase implements IProductServicePort {
         product.setBrand(brandFindById(product.getBrandId()));
 
         productPersistencePort.saveProduct(product);
+    }
+
+    @Override
+    public CustomPage<Product> getPaginationProductsByAscAndDescByNameProductOrNameBrandOrCategories(SortDirection sortDirection, FilterBy filterBy) {
+        CustomPage<Product> customPage = productPersistencePort.getPaginationProduct();
+
+        // Obtener la lista de productos
+        List<Product> products = customPage.getContent();
+
+        // Ordenar la lista de productos según el criterio y la dirección proporcionados
+        List<Product> sortedProducts = products.stream()
+                .sorted((p1, p2) -> {
+                    int comparisonResult = 0;
+
+                    switch (filterBy) {
+                        case PRODUCT:
+                            comparisonResult = p1.getName().compareToIgnoreCase(p2.getName());
+                            break;
+                        case BRAND:
+                            comparisonResult = p1.getBrand().getName().compareToIgnoreCase(p2.getBrand().getName());
+                            break;
+                        case CATEGORY:
+                            comparisonResult = compareCategories(p1.getCategories(), p2.getCategories());
+                            break;
+                    }
+
+                    return sortDirection == SortDirection.ASC ? comparisonResult : -comparisonResult;
+                })
+                .collect(Collectors.toList());
+
+        // Crear un nuevo CustomPage con los productos ordenados
+        return new CustomPage<>(
+                sortedProducts,
+                customPage.getPageNumber(),
+                customPage.getPageSize(),
+                customPage.getTotalElements(),
+                customPage.getTotalPages(),
+                customPage.isFirst(),
+                customPage.isLast()
+        );
+    }
+
+    private int compareCategories(Set<Category> categories1, Set<Category> categories2) {
+        // Implement a comparison logic for categories
+        // For simplicity, let's compare the size of the sets
+        return Integer.compare(categories1.size(), categories2.size());
     }
 
 

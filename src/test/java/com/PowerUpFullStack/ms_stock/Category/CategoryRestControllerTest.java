@@ -6,7 +6,7 @@ import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.Category
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.CategoryResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryRequestMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryResponseMapper;
-import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ISortRequestMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IParametersOfPaginationRequestMapper;
 import com.PowerUpFullStack.ms_stock.domain.api.ICategoryServicePort;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
 import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
@@ -49,7 +49,7 @@ public class CategoryRestControllerTest {
     @MockBean
     private ICategoryResponseMapper categoryResponseMapper;
     @MockBean
-    private ISortRequestMapper sortRequestMapper;
+    private IParametersOfPaginationRequestMapper parametersOfPaginationRequestMapper;
 
     @BeforeEach
     public void setUp() {
@@ -96,7 +96,7 @@ public class CategoryRestControllerTest {
 
         CustomPage<Category> customPage = new CustomPage<>();
 
-        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
+        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(parametersOfPaginationRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
                 .thenReturn(customPage);
 
         when(categoryResponseMapper.toCategoryPaginationResponseDto(customPage))
@@ -130,7 +130,7 @@ public class CategoryRestControllerTest {
 
         CustomPage<Category> customPage = new CustomPage<>();
 
-        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
+        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(parametersOfPaginationRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
                 .thenReturn(customPage);
 
         when(categoryResponseMapper.toCategoryPaginationResponseDto(customPage))
@@ -164,7 +164,7 @@ public class CategoryRestControllerTest {
 
         CustomPage<Category> customPage = new CustomPage<>();
 
-        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
+        when(categoryServicePort.getPaginationCategoriesByAscAndDesc(parametersOfPaginationRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
                 .thenReturn(customPage);
 
         when(categoryResponseMapper.toCategoryPaginationResponseDto(customPage))

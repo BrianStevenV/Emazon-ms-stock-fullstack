@@ -6,7 +6,7 @@ import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandPag
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandRequestMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandResponseMapper;
-import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ISortRequestMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IParametersOfPaginationRequestMapper;
 import com.PowerUpFullStack.ms_stock.domain.api.IBrandServicePort;
 import com.PowerUpFullStack.ms_stock.domain.model.Brand;
 import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
@@ -48,7 +48,7 @@ public class BrandRestControllerTest {
     @MockBean
     private IBrandResponseMapper brandResponseMapper;
     @MockBean
-    private ISortRequestMapper sortRequestMapper;
+    private IParametersOfPaginationRequestMapper parametersOfPaginationRequestMapper;
 
     @BeforeEach
     public void setUp() {
@@ -100,7 +100,7 @@ public class BrandRestControllerTest {
 
         CustomPage<Brand> customPage = new CustomPage<>();
 
-        when(brandServicePort.getPaginationBrandByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
+        when(brandServicePort.getPaginationBrandByAscAndDesc(parametersOfPaginationRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
                 .thenReturn(customPage);
 
         when(brandResponseMapper.toBrandPaginationResponseDto(customPage))
@@ -133,7 +133,7 @@ public class BrandRestControllerTest {
 
         CustomPage<Brand> customPage = new CustomPage<>();
 
-        when(brandServicePort.getPaginationBrandByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
+        when(brandServicePort.getPaginationBrandByAscAndDesc(parametersOfPaginationRequestMapper.toSortDirection(SortDirectionRequestDto.DESC)))
                 .thenReturn(customPage);
 
         when(brandResponseMapper.toBrandPaginationResponseDto(customPage))
@@ -166,7 +166,7 @@ public class BrandRestControllerTest {
 
         CustomPage<Brand> customPage = new CustomPage<>();
 
-        when(brandServicePort.getPaginationBrandByAscAndDesc(sortRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
+        when(brandServicePort.getPaginationBrandByAscAndDesc(parametersOfPaginationRequestMapper.toSortDirection(SortDirectionRequestDto.ASC)))
                 .thenReturn(customPage);
 
         when(brandResponseMapper.toBrandPaginationResponseDto(customPage))

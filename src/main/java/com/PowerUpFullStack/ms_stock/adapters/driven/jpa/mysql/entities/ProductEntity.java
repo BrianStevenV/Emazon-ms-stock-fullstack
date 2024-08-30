@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -53,5 +54,18 @@ public class ProductEntity {
     )
     private Set<CategoryEntity> categories;
     //JPA no carga automaticamente categorias asociadas en tabla intermedia porque JPA utiliza lazy loading para el performance (por defecto es LAZY
+    //El comentario de arriba es para mi! :D
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductEntity that = (ProductEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -5,10 +5,10 @@ import jakarta.validation.constraints.Pattern;
 
 public record BrandRequestDto(
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only letters")
+        @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Name must contain only letters and spaces")
         String name,
         @NotBlank
-        @Pattern(regexp = "^[a-zA-Z]+$", message = "Description must contain only letters")
+        @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Description must contain only letters and spaces")
         String description
 ) {
 }

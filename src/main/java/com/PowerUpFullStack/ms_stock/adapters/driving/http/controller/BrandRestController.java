@@ -6,7 +6,7 @@ import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandPag
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandRequestMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandResponseMapper;
-import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ISortRequestMapper;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IParametersOfPaginationRequestMapper;
 import com.PowerUpFullStack.ms_stock.domain.api.IBrandServicePort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public class BrandRestController {
     private final IBrandServicePort brandServicePort;
     private final IBrandRequestMapper brandRequestMapper;
     private final IBrandResponseMapper brandResponseMapper;
-    private final ISortRequestMapper sortRequestMapper;
+    private final IParametersOfPaginationRequestMapper parametersOfPaginationRequestMapper;
 
     @Operation(summary = "Add a new Brand",
             responses = {
@@ -54,7 +54,7 @@ public class BrandRestController {
     public BrandPaginationResponseDto<BrandResponseDto> getPaginationBrandByAscAndDesc(@Valid @RequestParam(defaultValue = "ASC") SortDirectionRequestDto sortDirectionRequestDto) {
         return brandResponseMapper
                 .toBrandPaginationResponseDto(brandServicePort
-                        .getPaginationBrandByAscAndDesc(sortRequestMapper
+                        .getPaginationBrandByAscAndDesc(parametersOfPaginationRequestMapper
                                 .toSortDirection(sortDirectionRequestDto)));
     }
 }
