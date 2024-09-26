@@ -15,8 +15,17 @@ import lombok.NoArgsConstructor;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.EntityConstant.CATEGORY_COLUMN_DESCRIPTION;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.EntityConstant.CATEGORY_COLUMN_NAME;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.EntityConstant.CATEGORY_ENTITY_NAME;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.EntityConstant.CATEGORY_MANY_TO_MANY_MAPPED_BY;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.UtilsConstants.CATEGORY_COLUMN_DESCRIPTION_SIZE_MAX;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.UtilsConstants.CATEGORY_COLUMN_DESCRIPTION_SIZE_MESSAGE;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.UtilsConstants.CATEGORY_COLUMN_NAME_SIZE_MAX;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.utils.UtilsConstants.CATEGORY_COLUMN_NAME_SIZE_MESSAGE;
+
 @Entity
-@Table(name = "category")
+@Table(name = CATEGORY_ENTITY_NAME)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -25,15 +34,15 @@ public class CategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 50, message = "Name must be less than 50 characters")
-    @Column(name = "name", unique = true, nullable = false)
+    @Size(max = CATEGORY_COLUMN_NAME_SIZE_MAX, message = CATEGORY_COLUMN_NAME_SIZE_MESSAGE)
+    @Column(name = CATEGORY_COLUMN_NAME, unique = true, nullable = false)
     private String name;
 
-    @Size(max = 90, message = "Description must be less than 90 characters")
-    @Column(name = "description", nullable = false)
+    @Size(max = CATEGORY_COLUMN_DESCRIPTION_SIZE_MAX, message = CATEGORY_COLUMN_DESCRIPTION_SIZE_MESSAGE)
+    @Column(name = CATEGORY_COLUMN_DESCRIPTION, nullable = false)
     private String description;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = CATEGORY_MANY_TO_MANY_MAPPED_BY)
     private Set<ProductEntity> products;
 
     @Override

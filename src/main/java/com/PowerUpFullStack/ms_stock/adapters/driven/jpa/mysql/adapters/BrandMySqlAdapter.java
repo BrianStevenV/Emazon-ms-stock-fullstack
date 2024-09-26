@@ -1,5 +1,6 @@
 package com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters;
 
+import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.utils.MySqlAdapterMethodsUtils;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.BrandEntity;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.ResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.mappers.IBrandEntityMapper;
@@ -12,7 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Optional;
+
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.utils.ConstantsMySqlAdapter.PAGE_NUMBER;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.utils.ConstantsMySqlAdapter.PAGE_SIZE;
 
 @RequiredArgsConstructor
 public class BrandMySqlAdapter implements IBrandPersistencePort {
@@ -33,36 +37,19 @@ public class BrandMySqlAdapter implements IBrandPersistencePort {
 
     @Override
     public CustomPage<Brand> getPaginationBrand() {
-        Pageable pageable = PageRequest.of(0, 10);
-
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Page<BrandEntity> brandPage = brandRepository.findAll(pageable);
 
-        if(brandPage.isEmpty()) {
+        if (brandPage.isEmpty()) {
             throw new ResourcesNotFoundException();
         }
 
-        List<Brand> categoryContent = brandPage.getContent()
-                .stream()
-                .map(category -> new Brand(category.getId(), category.getName(), category.getDescription()))
-                .toList();
-
-        CustomPage<Brand> customPage = new CustomPage<>(
-                categoryContent,
-                brandPage.getNumber(),
-                brandPage.getSize(),
-                brandPage.getTotalElements(),
-                brandPage.getTotalPages(),
-                brandPage.isFirst(),
-                brandPage.isLast()
-        );
-
-        return customPage;
+        return MySqlAdapterMethodsUtils.createCustomPage(brandPage,
+                brandEntityMapper::toBrand);
     }
 
     @Override
-    public Brand findById(Long brandId) {
-        return brandEntityMapper.toBrand(brandRepository
-                .findById(brandId)
-                .orElseThrow(ResourcesNotFoundException::new));
+    public Optional<Brand> findById(Long brandId) {
+        return brandRepository.findById(brandId).map(brandEntityMapper::toBrand);
     }
 }

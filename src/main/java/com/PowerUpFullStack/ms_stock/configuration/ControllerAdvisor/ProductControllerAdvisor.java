@@ -1,8 +1,11 @@
 package com.PowerUpFullStack.ms_stock.configuration.ControllerAdvisor;
 
+import com.PowerUpFullStack.ms_stock.domain.exception.BrandNotFoundException;
+import com.PowerUpFullStack.ms_stock.domain.exception.ProductAmountErrorException;
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductCategoryRepeatedException;
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductMustHaveAtLeastOneCategoryException;
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductCannotHaveMoreThanThreeCategoriesException;
+import com.PowerUpFullStack.ms_stock.domain.exception.ProductNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.PowerUpFullStack.ms_stock.configuration.Constants.BRAND_NOT_FOUND_MESSAGE_EXCEPTION;
+import static com.PowerUpFullStack.ms_stock.configuration.Constants.PRODUCT_AMOUNT_ERROR_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.PRODUCT_CANT_MORE_THREE_CATEGORIES_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.PRODUCT_CATEGORY_REPEATED_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.PRODUCT_MUST_HAVE_ALMOST_ONCE_CATEGORY_MESSAGE_EXCEPTION;
+import static com.PowerUpFullStack.ms_stock.configuration.Constants.PRODUCT_NOT_FOUND_MESSAGE_EXCEPTION;
 import static com.PowerUpFullStack.ms_stock.configuration.Constants.RESPONSE_ERROR_MESSAGE;
 
 @ControllerAdvice
@@ -63,5 +69,23 @@ public class ProductControllerAdvisor {
     public ResponseEntity<Map<String, String>> handleProductNotCanMoreThreeCategoriesException(ProductCannotHaveMoreThanThreeCategoriesException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, PRODUCT_CANT_MORE_THREE_CATEGORIES_MESSAGE_EXCEPTION));
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotFoundException(ProductNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, PRODUCT_NOT_FOUND_MESSAGE_EXCEPTION));
+    }
+
+    @ExceptionHandler(BrandNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleBrandNotFoundException(BrandNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, BRAND_NOT_FOUND_MESSAGE_EXCEPTION));
+    }
+
+    @ExceptionHandler(ProductAmountErrorException.class)
+    public ResponseEntity<Map<String, String>> handleProductAmountErrorException(ProductAmountErrorException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, PRODUCT_AMOUNT_ERROR_EXCEPTION));
     }
 }

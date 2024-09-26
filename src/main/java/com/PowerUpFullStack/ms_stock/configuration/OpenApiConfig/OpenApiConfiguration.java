@@ -1,5 +1,6 @@
-package com.PowerUpFullStack.ms_stock.configuration;
+package com.PowerUpFullStack.ms_stock.configuration.OpenApiConfig;
 
+import com.PowerUpFullStack.ms_stock.configuration.Constants;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;

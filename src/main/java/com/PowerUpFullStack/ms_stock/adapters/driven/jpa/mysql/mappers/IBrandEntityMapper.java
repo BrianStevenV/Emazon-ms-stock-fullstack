@@ -9,6 +9,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IBrandEntityMapper {
+
     Brand toBrand(BrandEntity brandEntity);
     BrandEntity toBrandEntity(Brand brand);
 }

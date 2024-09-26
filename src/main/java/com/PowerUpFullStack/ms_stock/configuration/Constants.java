@@ -2,6 +2,11 @@ package com.PowerUpFullStack.ms_stock.configuration;
 
 public class Constants {
     private Constants() { throw new IllegalStateException("Utility class"); }
+
+    public static final String PRODUCT_AMOUNT_ERROR_EXCEPTION = "Product amount cannot be null";
+    public static final String BRAND_NOT_FOUND_MESSAGE_EXCEPTION = "Brand not found";
+    public static final String PRODUCT_NOT_FOUND_MESSAGE_EXCEPTION = "Product not found";
+    public static final String WRONG_CREDENTIALS_MESSAGE = "Wrong credentials or role not allowed";
     public static final String PRODUCT_CANT_MORE_THREE_CATEGORIES_MESSAGE_EXCEPTION= "Product can't have more than three categories";
     public static final String PRODUCT_MUST_HAVE_ALMOST_ONCE_CATEGORY_MESSAGE_EXCEPTION = "Product must have at least one category";
     public static final String PRODUCT_CATEGORY_REPEATED_MESSAGE_EXCEPTION = "The selected categories are repeated";

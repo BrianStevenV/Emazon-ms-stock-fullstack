@@ -1,5 +1,6 @@
 package com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters;
 
+import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.utils.MySqlAdapterMethodsUtils;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.entities.CategoryEntity;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.ResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.mappers.ICategoryEntityMapper;
@@ -12,7 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.utils.ConstantsMySqlAdapter.PAGE_NUMBER;
+import static com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.adapters.utils.ConstantsMySqlAdapter.PAGE_SIZE;
 
 @RequiredArgsConstructor
 public class CategoryMySqlAdapter implements ICategoryPersistencePort {
@@ -33,31 +35,15 @@ public class CategoryMySqlAdapter implements ICategoryPersistencePort {
 
     @Override
     public CustomPage<Category> getPaginationCategories() {
-
-        Pageable pageable = PageRequest.of(0, 10);
-
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Page<CategoryEntity> categoriesPage = categoryRepository.findAll(pageable);
 
-        if(categoriesPage.isEmpty()) {
+        if (categoriesPage.isEmpty()) {
             throw new ResourcesNotFoundException();
         }
 
-        List<Category> categoryContent = categoriesPage.getContent()
-                .stream()
-                .map(category -> new Category(category.getId(), category.getName(), category.getDescription()))
-                .toList();
-
-        CustomPage<Category> customPage = new CustomPage<>(
-                categoryContent,
-                categoriesPage.getNumber(),
-                categoriesPage.getSize(),
-                categoriesPage.getTotalElements(),
-                categoriesPage.getTotalPages(),
-                categoriesPage.isFirst(),
-                categoriesPage.isLast()
-        );
-
-        return customPage;
+        return MySqlAdapterMethodsUtils.createCustomPage(categoriesPage,
+                categoryEntityMapper::toCategory);
     }
 
     @Override

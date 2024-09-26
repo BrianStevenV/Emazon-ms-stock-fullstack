@@ -4,11 +4,13 @@ import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.Resour
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductCannotHaveMoreThanThreeCategoriesException;
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductCategoryRepeatedException;
 import com.PowerUpFullStack.ms_stock.domain.exception.ProductMustHaveAtLeastOneCategoryException;
+import com.PowerUpFullStack.ms_stock.domain.exception.ProductNotFoundException;
 import com.PowerUpFullStack.ms_stock.domain.model.Brand;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
 import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
 import com.PowerUpFullStack.ms_stock.domain.model.FilterBy;
 import com.PowerUpFullStack.ms_stock.domain.model.Product;
+import com.PowerUpFullStack.ms_stock.domain.model.ProductAmount;
 import com.PowerUpFullStack.ms_stock.domain.model.SortDirection;
 import com.PowerUpFullStack.ms_stock.domain.spi.IBrandPersistencePort;
 import com.PowerUpFullStack.ms_stock.domain.spi.ICategoryPersistencePort;
@@ -22,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,7 +70,7 @@ public class ProductUseCaseTest {
         );
 
         when(categoryPersistencePort.findById(1L)).thenReturn(category);
-        when(brandPersistencePort.findById(1L)).thenReturn(brand);
+        when(brandPersistencePort.findById(1L)).thenReturn(Optional.of(brand));
 
         doNothing().when(productPersistencePort).saveProduct(any(Product.class));
 
@@ -351,6 +354,121 @@ public class ProductUseCaseTest {
 
         // Act & Assert
         assertThrows(RuntimeException.class, () -> productUseCase.createProduct(product));
+    }
+
+    @Test
+    void updateProductAmountFromSupplies_ValidAmount_ShouldUpdateProductAmount() {
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        ProductAmount productAmount = new ProductAmount(1L, 5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(Optional.of(product));
+        doNothing().when(productPersistencePort).saveProduct(any(Product.class));
+
+        productUseCase.updateProductAmountFromSupplies(productAmount);
+
+        assertEquals(15, product.getAmount());
+        verify(productPersistencePort, times(1)).saveProduct(product);
+    }
+
+    @Test
+    void updateProductAmountFromSupplies_NegativeAmount_ShouldUpdateProductAmount() {
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        ProductAmount productAmount = new ProductAmount(1L, -5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(Optional.of(product));
+        doNothing().when(productPersistencePort).saveProduct(any(Product.class));
+
+        productUseCase.updateProductAmountFromSupplies(productAmount);
+
+        assertEquals(5, product.getAmount());
+        verify(productPersistencePort, times(1)).saveProduct(product);
+    }
+
+    @Test
+    void updateProductAmountFromSupplies_ProductNotFound_ShouldThrowException() {
+        ProductAmount productAmount = new ProductAmount(1L, 5);
+
+        when(productPersistencePort.getProductById(1L)).thenThrow(ResourcesNotFoundException.class);
+
+        assertThrows(ResourcesNotFoundException.class, () -> productUseCase.updateProductAmountFromSupplies(productAmount));
+        verify(productPersistencePort, times(0)).saveProduct(any(Product.class));
+    }
+
+
+    @Test
+    void updateProductAmntFromSupplies_ValidAmount_ShouldUpdateProductAmount() {
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        ProductAmount productAmount = new ProductAmount(1L, 5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(java.util.Optional.of(product));
+        doNothing().when(productPersistencePort).saveProduct(any(Product.class));
+
+        productUseCase.updateProductAmountFromSupplies(productAmount);
+
+        assertEquals(15, product.getAmount());
+        verify(productPersistencePort, times(1)).saveProduct(product);
+    }
+
+    @Test
+    void updateProductAmntFromSupplies_NegativeAmount_ShouldUpdateProductAmount() {
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        ProductAmount productAmount = new ProductAmount(1L, -5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(java.util.Optional.of(product));
+        doNothing().when(productPersistencePort).saveProduct(any(Product.class));
+
+        productUseCase.updateProductAmountFromSupplies(productAmount);
+
+        assertEquals(5, product.getAmount());
+        verify(productPersistencePort, times(1)).saveProduct(product);
+    }
+
+    @Test
+    void updateProductAmntFromSupplies_ProductNotFound_ShouldThrowException() {
+        ProductAmount productAmount = new ProductAmount(1L, 5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> productUseCase.updateProductAmountFromSupplies(productAmount));
+        verify(productPersistencePort, times(0)).saveProduct(any(Product.class));
+    }
+
+    @Test
+    void revertProductAmountFromSupplies_ValidAmount_ShouldUpdateProductAmount() {
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        ProductAmount productAmount = new ProductAmount(1L, 5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(java.util.Optional.of(product));
+        doNothing().when(productPersistencePort).saveProduct(any(Product.class));
+
+        productUseCase.revertProductAmountFromSupplies(productAmount);
+
+        assertEquals(5, product.getAmount());
+        verify(productPersistencePort, times(1)).saveProduct(product);
+    }
+
+    @Test
+    void revertProductAmountFromSupplies_NegativeAmount_ShouldUpdateProductAmount() {
+        Product product = new Product(1L, "Product1", "Description1", 10, 100.0, 1L, List.of(1L));
+        ProductAmount productAmount = new ProductAmount(1L, -5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(java.util.Optional.of(product));
+        doNothing().when(productPersistencePort).saveProduct(any(Product.class));
+
+        productUseCase.revertProductAmountFromSupplies(productAmount);
+
+        assertEquals(15, product.getAmount());
+        verify(productPersistencePort, times(1)).saveProduct(product);
+    }
+
+    @Test
+    void revertProductAmountFromSupplies_ProductNotFound_ShouldThrowException() {
+        ProductAmount productAmount = new ProductAmount(1L, 5);
+
+        when(productPersistencePort.getProductById(1L)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> productUseCase.revertProductAmountFromSupplies(productAmount));
+        verify(productPersistencePort, times(0)).saveProduct(any(Product.class));
     }
 
 }

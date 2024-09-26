@@ -2,8 +2,8 @@ package com.PowerUpFullStack.ms_stock.Brand;
 
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.controller.BrandRestController;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.SortDirectionRequestDto;
-import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandPaginationResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandResponseDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.PaginationResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandRequestMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IBrandResponseMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IParametersOfPaginationRequestMapper;
@@ -26,6 +26,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.BRAND_CONTROLLER_GET_PAGINATION_BRAND;
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.BRAND_CONTROLLER_POST_CREATE_BRAND;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,7 +65,7 @@ public class BrandRestControllerTest {
         String brandRequestJson = "{\"name\":\"123@\",\"description\":\"46%5\"}";
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/brand/")
+        mockMvc.perform(post(BRAND_CONTROLLER_POST_CREATE_BRAND)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(brandRequestJson))
                 .andExpect(status().isBadRequest());
@@ -76,7 +78,7 @@ public class BrandRestControllerTest {
         String brandRequestJson = "{\"name\":\"Electronics\",\"description\":\"Devices\"}";
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/brand/")
+        mockMvc.perform(post(BRAND_CONTROLLER_POST_CREATE_BRAND)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(brandRequestJson))
                 .andExpect(status().isCreated());
@@ -88,7 +90,7 @@ public class BrandRestControllerTest {
     void getPaginationBrands_ValidSortDirectionAsc_ShouldReturnOk() throws Exception {
         // Arrange
         BrandResponseDto brandResponseDto = new BrandResponseDto(1L, "Nike", "Sportswear");
-        BrandPaginationResponseDto<BrandResponseDto> paginationResponseDto = new BrandPaginationResponseDto<>(
+        PaginationResponseDto<BrandResponseDto> paginationResponseDto = new PaginationResponseDto<>(
                 List.of(brandResponseDto),
                 0,
                 10,
@@ -107,7 +109,7 @@ public class BrandRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/brand/pagination/")
+        mockMvc.perform(get(BRAND_CONTROLLER_GET_PAGINATION_BRAND)
                         .param("sortDirection", "ASC")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -121,7 +123,7 @@ public class BrandRestControllerTest {
     void getPaginationBrands_ValidSortDirectionDesc_ShouldReturnOk() throws Exception {
         // Arrange
         BrandResponseDto brandResponseDto = new BrandResponseDto(1L, "Nike", "Sportswear");
-        BrandPaginationResponseDto<BrandResponseDto> paginationResponseDto = new BrandPaginationResponseDto<>(
+        PaginationResponseDto<BrandResponseDto> paginationResponseDto = new PaginationResponseDto<>(
                 List.of(brandResponseDto),
                 0,
                 10,
@@ -140,7 +142,7 @@ public class BrandRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/brand/pagination/")
+        mockMvc.perform(get(BRAND_CONTROLLER_GET_PAGINATION_BRAND)
                         .param("sortDirection", "DESC")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -154,7 +156,7 @@ public class BrandRestControllerTest {
     void getPaginationBrands_NoSortDirection_ShouldUseDefaultValue() throws Exception {
         // Arrange
         BrandResponseDto brandResponseDto = new BrandResponseDto(1L, "Nike", "Sportswear");
-        BrandPaginationResponseDto<BrandResponseDto> paginationResponseDto = new BrandPaginationResponseDto<>(
+        PaginationResponseDto<BrandResponseDto> paginationResponseDto = new PaginationResponseDto<>(
                 List.of(brandResponseDto),
                 0,
                 10,
@@ -173,7 +175,7 @@ public class BrandRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/brand/pagination/")
+        mockMvc.perform(get(BRAND_CONTROLLER_GET_PAGINATION_BRAND)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id", is(1)))

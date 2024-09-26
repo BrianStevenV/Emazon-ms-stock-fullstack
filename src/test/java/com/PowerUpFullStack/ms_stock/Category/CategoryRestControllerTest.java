@@ -2,8 +2,8 @@ package com.PowerUpFullStack.ms_stock.Category;
 
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.controller.CategoryRestController;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.SortDirectionRequestDto;
-import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.CategoryPaginationResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.CategoryResponseDto;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.PaginationResponseDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryRequestMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.ICategoryResponseMapper;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.mappers.IParametersOfPaginationRequestMapper;
@@ -25,6 +25,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.CATEGORY_CONTROLLER_GET_PAGINATION_CATEGORY;
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.CATEGORY_CONTROLLER_POST_CREATE_CATEGORY;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,7 +64,7 @@ public class CategoryRestControllerTest {
         // Arrange
         String categoryRequestJson = "{\"name\":\"123@\",\"description\":\"46%5\"}";
         // Act & Assert
-        mockMvc.perform(post("/api/v1/category/")
+        mockMvc.perform(post(CATEGORY_CONTROLLER_POST_CREATE_CATEGORY)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(categoryRequestJson))
                 .andExpect(status().isBadRequest());
@@ -74,7 +76,7 @@ public class CategoryRestControllerTest {
         String categoryRequestJson = "{\"name\":\"Electronics\",\"description\":\"Devices\"}";
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/category/")
+        mockMvc.perform(post(CATEGORY_CONTROLLER_POST_CREATE_CATEGORY)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(categoryRequestJson))
                 .andExpect(status().isCreated());
@@ -84,7 +86,7 @@ public class CategoryRestControllerTest {
     void getPaginationCategories_ValidSortDirectionAsc_ShouldReturnOk() throws Exception {
         // Arrange
         CategoryResponseDto categoryResponseDto = new CategoryResponseDto(1L, "Electronics", "Devices");
-        CategoryPaginationResponseDto<CategoryResponseDto> paginationResponseDto = new CategoryPaginationResponseDto<>(
+        PaginationResponseDto<CategoryResponseDto> paginationResponseDto = new PaginationResponseDto<>(
                 List.of(categoryResponseDto),
                 0,
                 10,
@@ -103,7 +105,7 @@ public class CategoryRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/category/pagination/")
+        mockMvc.perform(get(CATEGORY_CONTROLLER_GET_PAGINATION_CATEGORY)
                         .param("sortDirection", "ASC")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -118,7 +120,7 @@ public class CategoryRestControllerTest {
     void getPaginationCategories_ValidSortDirectionDesc_ShouldReturnOk() throws Exception {
         // Arrange
         CategoryResponseDto categoryResponseDto = new CategoryResponseDto(1L, "Electronics", "Devices");
-        CategoryPaginationResponseDto<CategoryResponseDto> paginationResponseDto = new CategoryPaginationResponseDto<>(
+        PaginationResponseDto<CategoryResponseDto> paginationResponseDto = new PaginationResponseDto<>(
                 List.of(categoryResponseDto),
                 0,
                 10,
@@ -137,7 +139,7 @@ public class CategoryRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/category/pagination/")
+        mockMvc.perform(get(CATEGORY_CONTROLLER_GET_PAGINATION_CATEGORY)
                         .param("sortDirection", "DESC")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -152,7 +154,7 @@ public class CategoryRestControllerTest {
     void getPaginationCategories_NoSortDirection_ShouldUseDefaultValue() throws Exception {
         // Arrange
         CategoryResponseDto categoryResponseDto = new CategoryResponseDto(1L, "Electronics", "Devices");
-        CategoryPaginationResponseDto<CategoryResponseDto> paginationResponseDto = new CategoryPaginationResponseDto<>(
+        PaginationResponseDto<CategoryResponseDto> paginationResponseDto = new PaginationResponseDto<>(
                 List.of(categoryResponseDto),
                 0,
                 10,
@@ -171,7 +173,7 @@ public class CategoryRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/category/pagination/")
+        mockMvc.perform(get(CATEGORY_CONTROLLER_GET_PAGINATION_CATEGORY)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id", is(1)))

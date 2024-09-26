@@ -8,6 +8,9 @@ spring:
     jpa:
       hibernate:
         ddl-auto: none
+jwt:
+  secret: ${KEYSECRET_SECURITY:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlBvd2VyIFVwIEZ1bGwgU3RhY2siLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTE2MjM5MDIyfQ.8r-71aFvp9lUbJHbUQnkHTYzlfZsdeF5n2ZZedqgee4}
+  expiration: ${EXPIRE_DAYS_SECURITY:3600000}
 management:
   endpoints:
     web:

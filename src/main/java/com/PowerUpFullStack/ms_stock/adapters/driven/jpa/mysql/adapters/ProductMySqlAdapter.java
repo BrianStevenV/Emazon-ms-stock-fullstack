@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -55,4 +56,11 @@ public class ProductMySqlAdapter implements IProductPersistencePort{
 
         return customPage;
     }
+
+    @Override
+    public Optional<Product> getProductById(Long id) {
+        return productRepository.findById(id)
+                .map(productEntityMapper::toProduct); // Mapea solo si el Optional tiene valor
+    }
+
 }

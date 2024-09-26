@@ -1,6 +1,8 @@
 package com.PowerUpFullStack.ms_stock.Product;
 
+import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.ResourcesNotFoundException;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.controller.ProductRestController;
+import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.AmountRequestDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.FilterByRequestDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.request.SortDirectionRequestDto;
 import com.PowerUpFullStack.ms_stock.adapters.driving.http.dto.response.BrandResponseDto;
@@ -30,9 +32,15 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 import java.util.Set;
 
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT;
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.PRODUCT_CONTROLLER_PATCH_UPDATE_AMOUNT;
+import static com.PowerUpFullStack.ms_stock.configuration.Security.utils.ConstantsSecurity.PRODUCT_CONTROLLER_POST_CREATE_PRODUCT;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,7 +74,7 @@ public class ProductRestControllerTest {
         String productRequestJson = "{\"name\":\"123@\",\"description\":\"46%5\",\"amount\":-10,\"price\":-100.0,\"brandId\":0,\"categoryId\":[-1,0]}";
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/product/")
+        mockMvc.perform(post(PRODUCT_CONTROLLER_POST_CREATE_PRODUCT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequestJson))
                 .andExpect(status().isBadRequest());
@@ -78,7 +86,7 @@ public class ProductRestControllerTest {
         String productRequestJson = "{\"name\":\"Electronics\",\"description\":\"Devices\",\"amount\":10,\"price\":100.0,\"brandId\":1,\"categoryId\":[1,2]}";
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/product/")
+        mockMvc.perform(post(PRODUCT_CONTROLLER_POST_CREATE_PRODUCT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequestJson))
                 .andExpect(status().isCreated());
@@ -90,7 +98,7 @@ public class ProductRestControllerTest {
         String productRequestJson = "{\"name\":\"ValidName\",\"description\":\"ValidDescription\",\"amount\":10,\"price\":-100.0,\"brandId\":1,\"categoryId\":[1,2]}";
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/product/")
+        mockMvc.perform(MockMvcRequestBuilders.post(PRODUCT_CONTROLLER_POST_CREATE_PRODUCT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequestJson))
                 .andExpect(status().isBadRequest());
@@ -102,7 +110,7 @@ public class ProductRestControllerTest {
         String productRequestJson = "{\"name\":\"ValidName\",\"description\":\"ValidDescription\",\"amount\":10,\"price\":100.0,\"brandId\":1,\"categoryId\":[]}";
 
         // Act & Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/product/")
+        mockMvc.perform(MockMvcRequestBuilders.post(PRODUCT_CONTROLLER_POST_CREATE_PRODUCT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequestJson))
                 .andExpect(status().isBadRequest());
@@ -137,7 +145,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .param("sortDirection", "ASC")
                         .param("filterBy", "PRODUCT")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -176,7 +184,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .param("sortDirection", "DESC")
                         .param("filterBy", "PRODUCT")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -215,7 +223,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id", is(1)))
@@ -252,7 +260,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .param("sortDirection", "ASC")
                         .param("filterBy", "BRAND")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -291,7 +299,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .param("sortDirection", "DESC")
                         .param("filterBy", "BRAND")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -330,7 +338,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .param("sortDirection", "ASC")
                         .param("filterBy", "CATEGORY")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -369,7 +377,7 @@ public class ProductRestControllerTest {
                 .thenReturn(paginationResponseDto);
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/product/pagination/")
+        mockMvc.perform(get(PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
                         .param("sortDirection", "DESC")
                         .param("filterBy", "CATEGORY")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -379,4 +387,35 @@ public class ProductRestControllerTest {
                 .andExpect(jsonPath("$.content[0].description", is("High-end gaming laptop")));
     }
 
+
+    void updateProductAmountFromSupplies_ValidRequest_ShouldReturnOk() throws Exception {
+        AmountRequestDto amountRequestDto = new AmountRequestDto(1L, 5);
+        String amountRequestJson = "{\"productId\":1,\"amount\":5}";
+
+        mockMvc.perform(patch("/api/v1/product/update-amount")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(amountRequestJson))
+                .andExpect(status().isOk());
+    }
+
+    void updateProductAmountFromSupplies_InvalidRequest_ShouldReturnBadRequest() throws Exception {
+        String amountRequestJson = "{\"productId\":1,\"amount\":\"invalid\"}";
+
+        mockMvc.perform(patch(PRODUCT_CONTROLLER_PATCH_UPDATE_AMOUNT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(amountRequestJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    void updateProductAmountFromSupplies_ProductNotFound_ShouldReturnNotFound() throws Exception {
+        AmountRequestDto amountRequestDto = new AmountRequestDto(999L, 5);
+        String amountRequestJson = "{\"productId\":999,\"amount\":5}";
+
+        doThrow(new ResourcesNotFoundException()).when(productServicePort).updateProductAmountFromSupplies(any());
+
+        mockMvc.perform(patch(PRODUCT_CONTROLLER_PATCH_UPDATE_AMOUNT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(amountRequestJson))
+                .andExpect(status().isNotFound());
+    }
 }

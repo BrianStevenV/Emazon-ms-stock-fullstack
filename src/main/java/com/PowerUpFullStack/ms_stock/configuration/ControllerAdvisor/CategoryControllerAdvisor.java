@@ -4,7 +4,7 @@ import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.exceptions.Resour
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsRequiredException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsTooLongException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameAlreadyExistsException;
-import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsRequired;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsRequiredException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsTooLongException;
 import com.PowerUpFullStack.ms_stock.domain.exception.InvalidSortDirectionException;
 import jakarta.validation.ConstraintViolationException;
@@ -71,8 +71,8 @@ public class CategoryControllerAdvisor {
                 .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, CATEGORY_DESCRIPTION_IS_TOO_LONG_MESSAGE_EXCEPTION));
     }
 
-    @ExceptionHandler(CategoryNameIsRequired.class)
-    public ResponseEntity<Map<String, String>> handleCategoryNameIsRequired(CategoryNameIsRequired ex){
+    @ExceptionHandler(CategoryNameIsRequiredException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNameIsRequired(CategoryNameIsRequiredException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, CATEGORY_NAME_IS_REQUIRED_MESSAGE_EXCEPTION));
     }

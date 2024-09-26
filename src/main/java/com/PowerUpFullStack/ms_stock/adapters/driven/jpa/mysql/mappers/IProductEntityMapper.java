@@ -13,6 +13,7 @@ public interface IProductEntityMapper {
     @Mapping(target = "brand", source = "brand")
     @Mapping(target = "categories", source = "categories")
     Product toProduct(ProductEntity productEntity);
+
     @Mapping(target = "brand", source = "brand")
     @Mapping(target = "categories", source = "categories")
     ProductEntity toProductEntity(Product product);

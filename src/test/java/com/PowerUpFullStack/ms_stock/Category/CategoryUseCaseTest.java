@@ -3,7 +3,7 @@ package com.PowerUpFullStack.ms_stock.Category;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsRequiredException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryDescriptionIsTooLongException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameAlreadyExistsException;
-import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsRequired;
+import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsRequiredException;
 import com.PowerUpFullStack.ms_stock.domain.exception.CategoryNameIsTooLongException;
 import com.PowerUpFullStack.ms_stock.domain.model.Category;
 import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
@@ -61,7 +61,7 @@ public class CategoryUseCaseTest {
         category.setName(null);
         category.setDescription("Valid Description");
         // Act & Assert
-        assertThrows(CategoryNameIsRequired.class, () -> categoryUseCase.createCategory(category));
+        assertThrows(CategoryNameIsRequiredException.class, () -> categoryUseCase.createCategory(category));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class CategoryUseCaseTest {
         category.setDescription("Valid Description");
 
         // Act & Assert
-        assertThrows(CategoryNameIsRequired.class, () -> categoryUseCase.createCategory(category));
+        assertThrows(CategoryNameIsRequiredException.class, () -> categoryUseCase.createCategory(category));
     }
     @Test
     void testCreateCategoryWithNameTooLong() {
