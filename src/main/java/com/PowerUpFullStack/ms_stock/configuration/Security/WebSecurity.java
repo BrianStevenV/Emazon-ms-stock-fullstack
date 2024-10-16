@@ -39,12 +39,24 @@ public class WebSecurity {
                                 ConstantsSecurity.V3_API_DOCS, ConstantsSecurity.ACTUATOR_HEALTH,
                                 ConstantsSecurity.CATEGORY_CONTROLLER_GET_PAGINATION_CATEGORY,
                                 ConstantsSecurity.BRAND_CONTROLLER_GET_PAGINATION_BRAND,
-                                ConstantsSecurity.PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT).permitAll()
+                                ConstantsSecurity.PRODUCT_CONTROLLER_GET_PAGINATION_PRODUCT)
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST, ConstantsSecurity.CATEGORY_CONTROLLER_POST_CREATE_CATEGORY,
                                 ConstantsSecurity.BRAND_CONTROLLER_POST_CREATE_BRAND,
-                                ConstantsSecurity.PRODUCT_CONTROLLER_POST_CREATE_PRODUCT).hasAuthority(ConstantsSecurity.ADMINISTRATOR_ROLE)
+                                ConstantsSecurity.PRODUCT_CONTROLLER_POST_CREATE_PRODUCT)
+                        .hasAuthority(ConstantsSecurity.ADMINISTRATOR_ROLE)
                         .requestMatchers(HttpMethod.PATCH, ConstantsSecurity.PRODUCT_CONTROLLER_PATCH_UPDATE_AMOUNT,
-                                ConstantsSecurity.PRODUCT_CONTROLLER_PATCH_CANCEL_AMOUNT).hasAuthority(ConstantsSecurity.WAREHOUSE_ASSISTANT_ROLE)
+                                ConstantsSecurity.PRODUCT_CONTROLLER_PATCH_CANCEL_AMOUNT)
+                        .hasAuthority(ConstantsSecurity.WAREHOUSE_ASSISTANT_ROLE)
+                        .requestMatchers(HttpMethod.GET,
+                                ConstantsSecurity.PRODUCT_CONTROLLER_GET_PRODUCT_BY_ID)
+                        .hasAuthority(ConstantsSecurity.CUSTOMER_ROLE)
+                        .requestMatchers(HttpMethod.POST,
+                                ConstantsSecurity.PRODUCT_CONTROLLER_POST_CATEGORIES_BY_PRODUCTS_IDS,
+                                ConstantsSecurity.PRODUCT_CONTROLLER_POST_AMOUNT_STOCK_AVAILABLE,
+                                ConstantsSecurity.PRODUCT_CONTROLLER_POST_REDUCE_QUANTITY,
+                                ConstantsSecurity.PRODUCT_CONTROLLER_POST_PRODUCT_BY_PRODUCTS_IDS)
+                        .hasAuthority(ConstantsSecurity.CUSTOMER_ROLE)
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin.disable())

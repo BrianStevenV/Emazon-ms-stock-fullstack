@@ -62,4 +62,6 @@ public class CategoryRestController {
                         .getPaginationCategoriesByAscAndDesc(parametersOfPaginationRequestMapper
                                 .toSortDirection(sortDirectionRequestDto)));
     }
+
+
 }

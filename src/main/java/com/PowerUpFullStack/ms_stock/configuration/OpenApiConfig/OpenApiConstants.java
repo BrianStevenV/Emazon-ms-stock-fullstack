@@ -5,6 +5,8 @@ public class OpenApiConstants {
 
     public static final String CODE_201 = "201";
     public static final String CODE_409 = "409";
+    public static final String CODE_200 = "200";
+    public static final String CODE_404 = "404";
 
     // Category Rest Controller
 
@@ -33,8 +35,8 @@ public class OpenApiConstants {
     public static final String DESCRIPTION_CREATE_PRODUCT_409 = "Product exists";
 
     public static final String SUMMARY_PAGINATION_PRODUCTS = "Products Pagination";
-    public static final String DESCRIPTION_PAGINATION_PRODUCTS_201 = "Products Pagination successful";
-    public static final String DESCRIPTION_PAGINATION_PRODUCTS_409 = "Products Pagination failed";
+    public static final String DESCRIPTION_PAGINATION_PRODUCTS_200 = "Products Pagination successful";
+    public static final String DESCRIPTION_PAGINATION_PRODUCTS_404 = "Products Pagination failed";
 
     public static final String SUMMARY_UPDATE_AMOUNT = "Update amount of Product";
     public static final String DESCRIPTION_UPDATE_AMOUNT_201 = "Amount updated";
@@ -43,6 +45,26 @@ public class OpenApiConstants {
     public static final String SUMMARY_CANCEL_AMOUNT = "Cancel amount of Product";
     public static final String DESCRIPTION_CANCEL_AMOUNT_201 = "Amount canceled";
     public static final String DESCRIPTION_CANCEL_AMOUNT_409 = "Amount not canceled";
+
+    public static final String SUMMARY_GET_PRODUCT_BY_ID = "Get Product by Id";
+    public static final String DESCRIPTION_GET_PRODUCT_BY_ID_200 = "Product found";
+    public static final String DESCRIPTION_GET_PRODUCT_BY_ID_404 = "Product not found";
+
+    public static final String SUMMARY_GET_CATEGORIES_BY_PRODUCTS_IDS = "Get Categories by Products Ids";
+    public static final String DESCRIPTION_GET_CATEGORIES_BY_PRODUCTS_IDS_200 = "Categories found";
+    public static final String DESCRIPTION_GET_CATEGORIES_BY_PRODUCTS_IDS_404 = "Categories not found";
+
+    public static final String SUMMARY_AMOUNT_STOCK_AVAILABLE = "Amount Stock Available";
+    public static final String DESCRIPTION_AMOUNT_STOCK_AVAILABLE_200 = "Amount Stock Available";
+    public static final String DESCRIPTION_AMOUNT_STOCK_AVAILABLE_404 = "Amount Stock not Available";
+
+    public static final String SUMMARY_GET_PRODUCT_BY_PRODUCTS_IDS = "Get Products by Products Ids";
+    public static final String DESCRIPTION_POST_PRODUCT_BY_PRODUCTS_IDS_200 = "Products found";
+    public static final String DESCRIPTION_POST_PRODUCT_BY_PRODUCTS_IDS_404 = "Products not found";
+
+    public static final String SUMMARY_REDUCE_QUANTITY = "Reduce Quantity";
+    public static final String DESCRIPTION_REDUCE_QUANTITY_200 = "Quantity reduced";
+    public static final String DESCRIPTION_REDUCE_QUANTITY_404 = "Quantity not reduced";
     // Content
 
     public static final String APPLICATION_JSON = "application/json";

@@ -6,6 +6,7 @@ import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.mappers.IProductE
 import com.PowerUpFullStack.ms_stock.adapters.driven.jpa.mysql.repositories.IProductRepository;
 import com.PowerUpFullStack.ms_stock.domain.model.CustomPage;
 import com.PowerUpFullStack.ms_stock.domain.model.Product;
+import com.PowerUpFullStack.ms_stock.domain.model.ProductIds;
 import com.PowerUpFullStack.ms_stock.domain.spi.IProductPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,11 @@ public class ProductMySqlAdapter implements IProductPersistencePort{
     public void saveProduct(Product product) {
         productRepository.save(productEntityMapper.toProductEntity(product));
 
+    }
+
+    @Override
+    public void saveProducts(List<Product> products) {
+        productRepository.saveAll(productEntityMapper.toListProductEntity(products));
     }
 
     @Override
@@ -61,6 +67,15 @@ public class ProductMySqlAdapter implements IProductPersistencePort{
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id)
                 .map(productEntityMapper::toProduct); // Mapea solo si el Optional tiene valor
+    }
+
+    @Override
+    public List<Product> getProductsByProductIds(ProductIds productIds) {
+        List<ProductEntity> productEntityList = productRepository.findAllById(productIds.getProductIds());
+        return productEntityList.stream()
+                .map(productEntityMapper::toProduct)
+                .collect(toList());
+
     }
 
 }

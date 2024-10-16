@@ -25,7 +25,13 @@ public class ConstantsSecurity {
     public static final String PRODUCT_CONTROLLER_PATCH_UPDATE_AMOUNT = "/product/amount/";
     public static final String PRODUCT_CONTROLLER_PATCH_CANCEL_AMOUNT = "/product/amount/revert";
 
+    public static final String PRODUCT_CONTROLLER_GET_PRODUCT_BY_ID = "/product/{productId}";
+    public static final String PRODUCT_CONTROLLER_POST_CATEGORIES_BY_PRODUCTS_IDS = "/product/categories";
+    public static final String PRODUCT_CONTROLLER_POST_AMOUNT_STOCK_AVAILABLE = "/product/stock/available";
 
+    public static final String PRODUCT_CONTROLLER_POST_PRODUCT_BY_PRODUCTS_IDS = "/product/products";
+
+    public static final String PRODUCT_CONTROLLER_POST_REDUCE_QUANTITY = "/product/reduce-quantity";
     // Actuator
     public static final String ACTUATOR_HEALTH = "/actuator/health";
 

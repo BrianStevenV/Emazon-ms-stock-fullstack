@@ -41,48 +41,6 @@ public class BrandUseCase implements IBrandServicePort {
         return customPageBrand;
     }
 
-//    @Override
-//    public CustomPage<Brand> getPaginationBrandByAscAndDesc(SortDirection sortDirection) {
-//        CustomPage<Brand> customPageBrand = brandPersistencePort.getPaginationBrand();
-//        if (PAGINATION_ASC.equalsIgnoreCase(sortDirection.name()) || PAGINATION_DESC.equalsIgnoreCase(sortDirection.name())) {
-//            customPageBrand.setContent(
-//                    customPageBrand.getContent().stream()
-//                            .sorted(PAGINATION_ASC.equalsIgnoreCase(sortDirection.name()) ?
-//                                    Comparator.comparing(Brand::getName) :
-//                                    Comparator.comparing(Brand::getName).reversed())
-//                            .toList()
-//            );
-//        }   else {
-//            throw new InvalidSortDirectionException();
-//        }
-//        return customPageBrand;
-//    }
-
-
-//    private Boolean brandDescriptionValidation(String brandDescription) {
-//        if(brandDescription == null || brandDescription.isEmpty()) {
-//            throw new BrandDescriptionIsRequiredException();
-//        }
-//        if(brandDescription.length() > MAX_LENGTH_BRAND_DESCRIPTION) {
-//            throw new BrandDescriptionIsTooLongException();
-//        }
-//        return true;
-//    }
-//
-//    private Boolean brandNameValidation(String brandName) {
-//        if(brandName == null || brandName.isEmpty()) {
-//            throw new BrandNameIsRequiredException();
-//        }
-//        if(brandName.length() > MAX_LENGTH_NAME) {
-//            throw new BrandNameIsTooLongException();
-//        }
-//
-//        Brand brandFromDatabase = getBrandFindByName(brandName);
-//        if(brandFromDatabase != null && brandFromDatabase.getName().equals(brandName)) {
-//            throw new BrandNameAlreadyExistsException();
-//        }
-//        return true;
-//    }
     private Boolean brandNameValidation(String brandName) {
         ValidationDomainUtils.validateName(brandName, MAX_LENGTH_NAME,
                 () -> getBrandFindByName(brandName),
